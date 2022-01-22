@@ -1,7 +1,7 @@
 ##########################################################################################
 # Machine Environment Config
 
-DEBUG_MODE = False
+DEBUG_MODE = True
 USE_CUDA = not DEBUG_MODE
 CUDA_DEVICE_NUM = 0
 
@@ -28,10 +28,28 @@ from TSPTester import TSPTester as Tester
 
 ##########################################################################################
 # parameters
+import argparse
+parser = argparse.ArgumentParser(description='Description of the argument')
+
+parser.add_argument('--problem_size', type=int, default= 20)
+parser.add_argument('--pomo_size', type=int, default= 1)
+parser.add_argument('--path', type=str, default='./result/saved_tsp20_model')
+parser.add_argument('--epoch', type=int, default= 510)
+parser.add_argument('--test_episodes', type=int, default= 1000)
+parser.add_argument('--test_batch_size', type=int, default= 10)
+parser.add_argument('--augmentation_enable', type=bool, default= False)
+parser.add_argument('--aug_factor', type=int, default= 8)
+parser.add_argument('--aug_batch_size', type=int, default= 10)
+parser.add_argument('--desc', type=str, default='test__tsp_n20')
+
+
+args = parser.parse_args()
+print(args.problem_size)
+
 
 env_params = {
-    'problem_size': 20,
-    'pomo_size': 20,
+    'problem_size': args.problem_size,
+    'pomo_size': args.pomo_size,
 }
 
 model_params = {
@@ -49,21 +67,21 @@ tester_params = {
     'use_cuda': USE_CUDA,
     'cuda_device_num': CUDA_DEVICE_NUM,
     'model_load': {
-        'path': './result/saved_tsp20_model',  # directory path of pre-trained model and log files saved.
-        'epoch': 510,  # epoch version of pre-trained model to laod.
+        'path': args.path,  # directory path of pre-trained model and log files saved.
+        'epoch': args.epoch,  # epoch version of pre-trained model to laod.
     },
-    'test_episodes': 100*1000,
-    'test_batch_size': 10000,
-    'augmentation_enable': True,
-    'aug_factor': 8,
-    'aug_batch_size': 1000,
+    'test_episodes': args.test_episodes,
+    'test_batch_size': args.test_batch_size,
+    'augmentation_enable': args.augmentation_enable,
+    'aug_factor': args.aug_factor,
+    'aug_batch_size': args.aug_batch_size,
 }
 if tester_params['augmentation_enable']:
     tester_params['test_batch_size'] = tester_params['aug_batch_size']
 
 logger_params = {
     'log_file': {
-        'desc': 'test__tsp_n20',
+        'desc': args.desc,
         'filename': 'run_log'
     }
 }
