@@ -1,12 +1,4 @@
 ##########################################################################################
-# Machine Environment Config
-
-DEBUG_MODE = True
-USE_CUDA = not DEBUG_MODE
-CUDA_DEVICE_NUM = 0
-
-
-##########################################################################################
 # Path Config
 
 import os
@@ -24,6 +16,13 @@ import logging
 from utils.utils import create_logger, copy_all_src
 
 from TSPTrainer import TSPTrainer as Trainer
+
+##########################################################################################
+# Machine Environment Config
+
+DEBUG_MODE = True
+USE_CUDA = not DEBUG_MODE
+CUDA_DEVICE_NUM = 0
 
 
 ##########################################################################################
