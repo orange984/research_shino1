@@ -30,8 +30,8 @@ from TSPTester import TSPTester as Tester
 # parameters
 
 env_params = {
-    'problem_size': 20,
-    'pomo_size': 20,
+    'problem_size': 100,
+    'pomo_size': 100,
 }
 
 model_params = {
@@ -49,21 +49,21 @@ tester_params = {
     'use_cuda': USE_CUDA,
     'cuda_device_num': CUDA_DEVICE_NUM,
     'model_load': {
-        'path': './result/saved_tsp20_model',  # directory path of pre-trained model and log files saved.
-        'epoch': 510,  # epoch version of pre-trained model to laod.
+        'path': './result/saved_tsp100_model',  # directory path of pre-trained model and log files saved.
+        'epoch': 2000,  # epoch version of pre-trained model to laod.
     },
-    'test_episodes': 100*1000,
-    'test_batch_size': 10000,
-    'augmentation_enable': True,
+    'test_episodes': 10 * 1000,
+    'test_batch_size': 100,
+    'augmentation_enable': False,
     'aug_factor': 8,
-    'aug_batch_size': 1000,
+    'aug_batch_size': 1,
 }
 if tester_params['augmentation_enable']:
     tester_params['test_batch_size'] = tester_params['aug_batch_size']
 
 logger_params = {
     'log_file': {
-        'desc': 'test__tsp_n20',
+        'desc': 'test__tsp_n100',
         'filename': 'run_log'
     }
 }
