@@ -11,7 +11,7 @@ for AUG in "${AUGS[@]}"; do
                       --epoch ${EPOCHS[$INDEX]}\
                       --test_episodes 100000\
                       --test_batch_size 10000\
-                      --augmentation_enable True\
+                      --augmentation_enable\
                       --aug_factor $AUG\
                       --aug_batch_size 1000\
                       --desc "test__tsp_n""${SIZES[$INDEX]}"
