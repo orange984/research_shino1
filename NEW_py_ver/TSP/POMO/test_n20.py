@@ -1,12 +1,4 @@
 ##########################################################################################
-# Machine Environment Config
-
-DEBUG_MODE = False
-USE_CUDA = not DEBUG_MODE
-CUDA_DEVICE_NUM = 0
-
-
-##########################################################################################
 # Path Config
 
 import os
@@ -26,12 +18,39 @@ from utils.utils import create_logger, copy_all_src
 from TSPTester import TSPTester as Tester
 
 
+
+import argparse
+parser = argparse.ArgumentParser(description='Description of the argument')
+
+parser.add_argument('--DEBUG_MODE', action='store_true')
+parser.add_argument('--problem_size', type=int, default= 20)
+parser.add_argument('--pomo_size', type=int, default= 1)
+parser.add_argument('--path', type=str, default='./result/saved_tsp20_model')
+parser.add_argument('--epoch', type=int, default= 510)
+parser.add_argument('--test_episodes', type=int, default= 1000)
+parser.add_argument('--test_batch_size', type=int, default= 10)
+parser.add_argument('--augmentation_enable', action='store_true')
+parser.add_argument('--aug_factor', type=int, default= 8)
+parser.add_argument('--aug_batch_size', type=int, default= 10)
+parser.add_argument('--desc', type=str, default='test__tsp_n20')
+
+
+args = parser.parse_args()
+print(args.problem_size)
+
+##########################################################################################
+# Machine Environment Config
+
+DEBUG_MODE = args.DEBUG_MODE
+USE_CUDA = not DEBUG_MODE
+CUDA_DEVICE_NUM = 0
+
+
 ##########################################################################################
 # parameters
-
 env_params = {
-    'problem_size': 100,
-    'pomo_size': 100,
+    'problem_size': args.problem_size,
+    'pomo_size': args.pomo_size,
 }
 
 model_params = {
@@ -49,21 +68,22 @@ tester_params = {
     'use_cuda': USE_CUDA,
     'cuda_device_num': CUDA_DEVICE_NUM,
     'model_load': {
-        'path': './result/saved_tsp100_model',  # directory path of pre-trained model and log files saved.
-        'epoch': 2000,  # epoch version of pre-trained model to laod.
+        'path': args.path,  # directory path of pre-trained model and log files saved.
+        'epoch': args.epoch,  # epoch version of pre-trained model to laod.
     },
-    'test_episodes': 10 * 1000,
-    'test_batch_size': 100,
-    'augmentation_enable': False,
-    'aug_factor': 8,
-    'aug_batch_size': 1,
+    'test_episodes': args.test_episodes,
+    'test_batch_size': args.test_batch_size,
+    'augmentation_enable': args.augmentation_enable,
+    'aug_factor': args.aug_factor,
+    'aug_batch_size': args.aug_batch_size,
 }
+print(tester_params)
 if tester_params['augmentation_enable']:
     tester_params['test_batch_size'] = tester_params['aug_batch_size']
 
 logger_params = {
     'log_file': {
-        'desc': 'test__tsp_n100',
+        'desc': args.desc,
         'filename': 'run_log'
     }
 }

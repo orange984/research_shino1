@@ -1,0 +1,12 @@
+problem_size: 20
+pomo_size: 1
+
+path: ./result/saved_tsp20_model
+epoch: 510
+test_episodes: 1000
+test_batch_size: 10
+augmentation_enable: False
+aug_factor: 8
+aug_batch_size: 1000
+desc: test__tsp_n20
+

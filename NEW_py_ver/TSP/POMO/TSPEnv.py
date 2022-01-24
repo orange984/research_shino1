@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 import torch
 
-from TSProblemDef import get_random_problems, augment_xy_data_by_8_fold
+from TSProblemDef import get_random_problems, augment_xy_data_by_8_fold, augment_xy_data_by_10_fold, augment_xy_data_by_12_fold, augment_xy_data_by_16_fold
 
 
 @dataclass
@@ -58,6 +58,18 @@ class TSPEnv:
                 self.batch_size = self.batch_size * 8
                 self.problems = augment_xy_data_by_8_fold(self.problems)
                 # shape: (8*batch, problem, 2)
+            elif aug_factor == 10:
+                self.batch_size = self.batch_size * 10
+                self.problems = augment_xy_data_by_10_fold(self.problems)
+                # shape: (10*batch, problem, 2)
+            elif aug_factor == 12:
+                self.batch_size = self.batch_size * 12
+                self.problems = augment_xy_data_by_12_fold(self.problems)
+                # shape: (12*batch, problem, 2)
+            elif aug_factor == 16:
+                self.batch_size = self.batch_size * 16
+                self.problems = augment_xy_data_by_16_fold(self.problems)
+                # shape: (16*batch, problem, 2)
             else:
                 raise NotImplementedError
 
