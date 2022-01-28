@@ -1,5 +1,10 @@
 *.jpg
 *.drawio
+Dockerfile
+/NEW_py_ver/TSP/POMO/result
+!/NEW_py_ver/TSP/POMO/result/saved*
+/NEW_py_ver/CVRP/POMO/result
+!/NEW_py_ver/CVRP/POMO/result/saved*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 import torch
 
-from TSProblemDef import get_random_problems, augment_xy_data_by_8_fold, augment_xy_data_by_10_fold, augment_xy_data_by_12_fold, augment_xy_data_by_16_fold
+from TSProblemDef import get_random_problems, augment_xy_data_by_4_fold, augment_xy_data_by_8_fold, augment_xy_data_by_10_fold, augment_xy_data_by_12_fold, augment_xy_data_by_16_fold
 
 
 @dataclass
@@ -58,6 +58,10 @@ class TSPEnv:
                 self.batch_size = self.batch_size * 8
                 self.problems = augment_xy_data_by_8_fold(self.problems)
                 # shape: (8*batch, problem, 2)
+            elif aug_factor == 4:
+                self.batch_size = self.batch_size * 4
+                self.problems = augment_xy_data_by_4_fold(self.problems)
+                # shape: (4*batch, problem, 2)
             elif aug_factor == 10:
                 self.batch_size = self.batch_size * 10
                 self.problems = augment_xy_data_by_10_fold(self.problems)
