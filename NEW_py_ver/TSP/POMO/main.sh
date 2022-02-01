@@ -9,11 +9,13 @@ for AUG in "${AUGS[@]}"; do
                       --pomo_size ${SIZES[$INDEX]}\
                       --path "./result/saved_tsp""${SIZES[$INDEX]}""_model"\
                       --epoch ${EPOCHS[$INDEX]}\
-                      --test_episodes 100000\
-                      --test_batch_size 100\
+                      --test_episodes 10000\
+                      --TEST_MODE\
+                      --test_set "../TSProblem/testset_n""${SIZES[$INDEX]}"".npy"\
+                      --test_batch_size 20\
                       --augmentation_enable\
                       --aug_factor $AUG\
-                      --aug_batch_size 100\
+                      --aug_batch_size 20\
                       --desc "test__tsp_n""${SIZES[$INDEX]}"
 done
 done

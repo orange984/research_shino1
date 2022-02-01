@@ -18,7 +18,7 @@ from utils.utils import create_logger, copy_all_src
 from TSPTester import TSPTester as Tester
 
 
-
+import numpy as np
 import argparse
 parser = argparse.ArgumentParser(description='Description of the argument')
 
@@ -27,6 +27,8 @@ parser.add_argument('--problem_size', type=int, default= 20)
 parser.add_argument('--pomo_size', type=int, default= 1)
 parser.add_argument('--path', type=str, default='./result/saved_tsp20_model')
 parser.add_argument('--epoch', type=int, default= 510)
+parser.add_argument('--TEST_MODE', action='store_true')
+parser.add_argument('--test_set', type=str, default='../TSProblem/testset_n20.npy')
 parser.add_argument('--test_episodes', type=int, default= 1000)
 parser.add_argument('--test_batch_size', type=int, default= 10)
 parser.add_argument('--augmentation_enable', action='store_true')
@@ -36,7 +38,6 @@ parser.add_argument('--desc', type=str, default='test__tsp_n20')
 
 
 args = parser.parse_args()
-print(args.problem_size)
 
 ##########################################################################################
 # Machine Environment Config
@@ -51,6 +52,8 @@ CUDA_DEVICE_NUM = 0
 env_params = {
     'problem_size': args.problem_size,
     'pomo_size': args.pomo_size,
+    'TEST_MODE': args.TEST_MODE,
+    'test_set': args.test_set,
 }
 
 model_params = {
@@ -77,7 +80,6 @@ tester_params = {
     'aug_factor': args.aug_factor,
     'aug_batch_size': args.aug_batch_size,
 }
-print(tester_params)
 if tester_params['augmentation_enable']:
     tester_params['test_batch_size'] = tester_params['aug_batch_size']
 
@@ -94,7 +96,7 @@ logger_params = {
 def main():
     if DEBUG_MODE:
         _set_debug_mode()
-
+    print(np.load(args.test_set)[0][0][:5])
     create_logger(**logger_params)
     _print_config()
 
@@ -109,7 +111,7 @@ def main():
 
 def _set_debug_mode():
     global tester_params
-    tester_params['test_episodes'] = 100
+    tester_params['test_episodes'] = 10000
 
 
 def _print_config():
