@@ -1,6 +1,7 @@
 
 from dataclasses import dataclass
 import torch
+import numpy as np
 
 from TSProblemDef import get_random_problems, augment_xy_data_by_4_fold, augment_xy_data_by_8_fold, augment_xy_data_by_10_fold, augment_xy_data_by_12_fold, augment_xy_data_by_16_fold
 
@@ -30,6 +31,10 @@ class TSPEnv:
         self.env_params = env_params
         self.problem_size = env_params['problem_size']
         self.pomo_size = env_params['pomo_size']
+        self.TEST_MODE = env_params['TEST_MODE']
+        self.test_set = env_params['test_set']
+        self.probs = torch.from_numpy(
+            np.load(self.test_set).astype(np.float32)).clone()
 
         # Const @Load_Problem
         ####################################
@@ -48,10 +53,16 @@ class TSPEnv:
         self.selected_node_list = None
         # shape: (batch, pomo, 0~problem)
 
-    def load_problems(self, batch_size, aug_factor=1):
+    def load_problems(self, batch_size, episode, aug_factor=1):
         self.batch_size = batch_size
+        #self.episode = episode
 
-        self.problems = get_random_problems(batch_size, self.problem_size)
+        if self.TEST_MODE:
+            i = int(episode/batch_size)
+            self.problems = self.probs[i]
+            #torch.reshape(probs[i], (batch_size, self.problem_size, 2))
+        else:
+            self.problems = get_random_problems(batch_size, self.problem_size)
         # problems.shape: (batch, problem, 2)
         if aug_factor > 1:
             if aug_factor == 8:

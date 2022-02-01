@@ -1,15 +1,22 @@
 #!/bin/bash
+EPOCHS=(510)
+SIZES=(20)
+AUGS=(8)
 
-
-for AUG in 32 64 128 ; do
-  python test_n20.py  --problem_size 250\
-                      --pomo_size $AUG\
-                      --path "./result/saved_tsp100_model"\
-                      --epoch 2000\
+for INDEX in 0; do
+for AUG in "${AUGS[@]}"; do
+  python test_n20.py  --DEBUG_MODE\
+                      --problem_size ${SIZES[$INDEX]}\
+                      --pomo_size ${SIZES[$INDEX]}\
+                      --path "./result/saved_tsp""${SIZES[$INDEX]}""_model"\
+                      --epoch ${EPOCHS[$INDEX]}\
+                      --TEST_MODE\
+                      --test_set "../TSProblem/testset_n""${SIZES[$INDEX]}"".npy"\
                       --test_episodes 10000\
-                      --test_batch_size 100\
+                      --test_batch_size 20\
                       #--augmentation_enable\
                       --aug_factor $AUG\
-                      --aug_batch_size 100\
-                      --desc "test__tsp_n100"
+                      --aug_batch_size 20\
+                      --desc "test__tsp_n""${SIZES[$INDEX]}"
+done
 done

@@ -9,7 +9,6 @@ from TSPModel import TSPModel as Model
 
 from utils.utils import *
 
-
 class TSPTester:
     def __init__(self,
                  env_params,
@@ -65,7 +64,7 @@ class TSPTester:
             remaining = test_num_episode - episode
             batch_size = min(self.tester_params['test_batch_size'], remaining)
 
-            score, aug_score = self._test_one_batch(batch_size)
+            score, aug_score = self._test_one_batch(batch_size, episode)
 
             score_AM.update(score, batch_size)
             aug_score_AM.update(aug_score, batch_size)
@@ -86,7 +85,7 @@ class TSPTester:
                 self.logger.info(" NO-AUG SCORE: {:.4f} ".format(score_AM.avg))
                 self.logger.info(" AUGMENTATION SCORE: {:.4f} ".format(aug_score_AM.avg))
 
-    def _test_one_batch(self, batch_size):
+    def _test_one_batch(self, batch_size, episode):
 
         # Augmentation
         ###############################################
@@ -99,7 +98,7 @@ class TSPTester:
         ###############################################
         self.model.eval()
         with torch.no_grad():
-            self.env.load_problems(batch_size, aug_factor)
+            self.env.load_problems(batch_size, episode, aug_factor)
             reset_state, _, _ = self.env.reset()
             self.model.pre_forward(reset_state)
 

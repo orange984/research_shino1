@@ -130,7 +130,7 @@ class TSPTrainer:
             remaining = train_num_episode - episode
             batch_size = min(self.trainer_params['train_batch_size'], remaining)
 
-            avg_score, avg_loss = self._train_one_batch(batch_size)
+            avg_score, avg_loss = self._train_one_batch(batch_size, episode)
             score_AM.update(avg_score, batch_size)
             loss_AM.update(avg_loss, batch_size)
 
@@ -151,12 +151,12 @@ class TSPTrainer:
 
         return score_AM.avg, loss_AM.avg
 
-    def _train_one_batch(self, batch_size):
+    def _train_one_batch(self, batch_size, episode):
 
         # Prep
         ###############################################
         self.model.train()
-        self.env.load_problems(batch_size)
+        self.env.load_problems(batch_size, episode)
         reset_state, _, _ = self.env.reset()
         self.model.pre_forward(reset_state)
 
