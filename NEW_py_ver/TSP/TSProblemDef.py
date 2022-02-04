@@ -27,6 +27,7 @@ def rotate(xy, rad):
     xy = xy + 0.5
     return torch.reshape(xy, (batch, problem, 2))
 
+
 def augment_xy_data_by_4_fold(problems):
     # problems.shape: (batch, problem, 2)
 
