@@ -1,9 +1,11 @@
 #!/bin/bash
 EPOCHS=(510 1000 2000)
 SIZES=(20 50 100)
-AUGS=(8 10 12 16)
+MODEL=(100)
+AUGS=(8)
 
-for INDEX in 0 1 2; do
+
+for INDEX in 0; do
 for AUG in "${AUGS[@]}"; do
   python test_n20.py  --problem_size ${SIZES[$INDEX]}\
                       --pomo_size ${SIZES[$INDEX]}\

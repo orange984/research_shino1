@@ -27,6 +27,7 @@ def rotate(xy, rad):
     xy = xy + 0.5
     return torch.reshape(xy, (batch, problem, 2))
 
+
 def augment_xy_data_by_4_fold(problems):
     # problems.shape: (batch, problem, 2)
 
@@ -74,7 +75,7 @@ def augment_xy_data_by_8_fold(problems):
 #     y = problems[:, :, [1]]
 #     # x,y shape: (batch, problem, 1)
 
-#     dat1 = torch.cat((x+0.1, y+0.1), dim=2)
+#     dat1 = problems
 #     dat2 = torch.cat((x-0.1, y-0.1), dim=2)
 #     dat3 = torch.cat((x+0.1, y-0.1), dim=2)
 #     dat4 = torch.cat((x-0.1, y+0.1), dim=2)
@@ -174,7 +175,7 @@ def augment_xy_data_by_8_fold(problems):
 # def augment_xy_data_by_8_fold(problems):
 #     # problems.shape: (batch, problem, 2)
 
-#     dat1 = rotate(problems, math.pi/12)
+#     dat1 = problems
 #     dat2 = rotate(problems, -math.pi/12)
 #     dat3 = rotate(problems, math.pi/6)
 #     dat4 = rotate(problems, -math.pi/6)
@@ -191,7 +192,7 @@ def augment_xy_data_by_8_fold(problems):
 # def augment_xy_data_by_8_fold(problems):
 #     # problems.shape: (batch, problem, 2)
 
-#     dat1 = rotate(problems, math.pi/12)
+#     dat1 = problems
 #     dat2 = rotate(problems, math.pi*13/12)
 #     dat3 = rotate(problems, math.pi/6)
 #     dat4 = rotate(problems, math.pi*7/6)
@@ -199,6 +200,23 @@ def augment_xy_data_by_8_fold(problems):
 #     dat6 = rotate(problems, math.pi*5/4)
 #     dat7 = rotate(problems, math.pi/3)
 #     dat8 = rotate(problems, math.pi*4/3)
+
+#     aug_problems = torch.cat((dat1, dat2, dat3, dat4, dat5, dat6, dat7, dat8), dim=0)
+#     # shape: (8*batch, problem, 2)
+
+#     return aug_problems
+
+# def augment_xy_data_by_8_fold(problems):
+#     # problems.shape: (batch, problem, 2)
+
+#     dat1 = problems
+#     dat2 = rotate(problems, math.pi/2)
+#     dat3 = rotate(problems, -math.pi/2)
+#     dat4 = rotate(problems, math.pi*4)
+#     dat5 = rotate(problems, -math.pi/4)
+#     dat6 = rotate(problems, math.pi*3/4)
+#     dat7 = rotate(problems, -math.pi*3/4)
+#     dat8 = rotate(problems, math.pi)
 
 #     aug_problems = torch.cat((dat1, dat2, dat3, dat4, dat5, dat6, dat7, dat8), dim=0)
 #     # shape: (8*batch, problem, 2)

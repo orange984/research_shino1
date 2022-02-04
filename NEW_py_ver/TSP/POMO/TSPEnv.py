@@ -34,7 +34,7 @@ class TSPEnv:
         self.TEST_MODE = env_params['TEST_MODE']
         self.test_set = env_params['test_set']
         self.probs = torch.from_numpy(
-            np.load(self.test_set).astype(np.float32)).clone()
+            np.load(self.test_set).astype(np.float32)).clone().to(env_params['cuda_device_num'] if env_params['use_cuda'] else 'cpu')
 
         # Const @Load_Problem
         ####################################
@@ -88,19 +88,24 @@ class TSPEnv:
             else:
                 raise NotImplementedError
 
-        self.BATCH_IDX = torch.arange(self.batch_size)[:, None].expand(self.batch_size, self.pomo_size)
-        self.POMO_IDX = torch.arange(self.pomo_size)[None, :].expand(self.batch_size, self.pomo_size)
+        self.BATCH_IDX = torch.arange(self.batch_size)[:, None].expand(
+            self.batch_size, self.pomo_size)
+        self.POMO_IDX = torch.arange(self.pomo_size)[None, :].expand(
+            self.batch_size, self.pomo_size)
 
     def reset(self):
         self.selected_count = 0
         self.current_node = None
         # shape: (batch, pomo)
-        self.selected_node_list = torch.zeros((self.batch_size, self.pomo_size, 0), dtype=torch.long)
+        self.selected_node_list = torch.zeros(
+            (self.batch_size, self.pomo_size, 0), dtype=torch.long)
         # shape: (batch, pomo, 0~problem)
 
         # CREATE STEP STATE
-        self.step_state = Step_State(BATCH_IDX=self.BATCH_IDX, POMO_IDX=self.POMO_IDX)
-        self.step_state.ninf_mask = torch.zeros((self.batch_size, self.pomo_size, self.problem_size))
+        self.step_state = Step_State(
+            BATCH_IDX=self.BATCH_IDX, POMO_IDX=self.POMO_IDX)
+        self.step_state.ninf_mask = torch.zeros(
+            (self.batch_size, self.pomo_size, self.problem_size))
         # shape: (batch, pomo, problem)
 
         reward = None
@@ -118,13 +123,15 @@ class TSPEnv:
         self.selected_count += 1
         self.current_node = selected
         # shape: (batch, pomo)
-        self.selected_node_list = torch.cat((self.selected_node_list, self.current_node[:, :, None]), dim=2)
+        self.selected_node_list = torch.cat(
+            (self.selected_node_list, self.current_node[:, :, None]), dim=2)
         # shape: (batch, pomo, 0~problem)
 
         # UPDATE STEP STATE
         self.step_state.current_node = self.current_node
         # shape: (batch, pomo)
-        self.step_state.ninf_mask[self.BATCH_IDX, self.POMO_IDX, self.current_node] = float('-inf')
+        self.step_state.ninf_mask[self.BATCH_IDX,
+                                  self.POMO_IDX, self.current_node] = float('-inf')
         # shape: (batch, pomo, node)
 
         # returning values
@@ -137,9 +144,11 @@ class TSPEnv:
         return self.step_state, reward, done
 
     def _get_travel_distance(self):
-        gathering_index = self.selected_node_list.unsqueeze(3).expand(self.batch_size, -1, self.problem_size, 2)
+        gathering_index = self.selected_node_list.unsqueeze(
+            3).expand(self.batch_size, -1, self.problem_size, 2)
         # shape: (batch, pomo, problem, 2)
-        seq_expanded = self.problems[:, None, :, :].expand(self.batch_size, self.pomo_size, self.problem_size, 2)
+        seq_expanded = self.problems[:, None, :, :].expand(
+            self.batch_size, self.pomo_size, self.problem_size, 2)
 
         ordered_seq = seq_expanded.gather(dim=2, index=gathering_index)
         # shape: (batch, pomo, problem, 2)
@@ -151,4 +160,3 @@ class TSPEnv:
         travel_distances = segment_lengths.sum(2)
         # shape: (batch, pomo)
         return travel_distances
-
