@@ -1,12 +1,6 @@
 ##########################################################################################
 # Path Config
 
-import argparse
-import torch
-import numpy as np
-from TSPTester import TSPTester as Tester
-from utils.utils import create_logger, copy_all_src
-import logging
 import os
 import sys
 
@@ -17,6 +11,16 @@ sys.path.insert(0, "../..")  # for utils
 
 ##########################################################################################
 # import
+
+import logging
+from utils.utils import create_logger, copy_all_src
+
+from TSPTester import TSPTester as Tester
+
+
+import numpy as np
+import torch
+import argparse
 
 
 parser = argparse.ArgumentParser(description='Description of the argument')
