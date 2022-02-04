@@ -19,6 +19,7 @@ from TSPTester import TSPTester as Tester
 
 
 import numpy as np
+import torch
 import argparse
 parser = argparse.ArgumentParser(description='Description of the argument')
 
@@ -50,6 +51,8 @@ CUDA_DEVICE_NUM = 0
 ##########################################################################################
 # parameters
 env_params = {
+    'use_cuda': USE_CUDA,
+    'cuda_device_num': CUDA_DEVICE_NUM,
     'problem_size': args.problem_size,
     'pomo_size': args.pomo_size,
     'TEST_MODE': args.TEST_MODE,
@@ -94,6 +97,10 @@ logger_params = {
 # main
 
 def main():
+    torch.manual_seed(0)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+    
     if DEBUG_MODE:
         _set_debug_mode()
     print(np.load(args.test_set)[0][0][:5])
