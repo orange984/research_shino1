@@ -32,6 +32,7 @@ class TSPEnv:
         self.problem_size = env_params['problem_size']
         self.pomo_size = env_params['pomo_size']
         self.TEST_MODE = env_params['TEST_MODE']
+        self.NORM_MODE = env_params['NORM_MODE']
         self.test_set = env_params['test_set']
         self.probs = torch.from_numpy(
             np.load(self.test_set).astype(np.float32)).clone().to(env_params['cuda_device_num'] if env_params['use_cuda'] else 'cpu')
@@ -41,6 +42,7 @@ class TSPEnv:
         self.batch_size = None
         self.BATCH_IDX = None
         self.POMO_IDX = None
+        self.norm = None
         # IDX.shape: (batch, pomo)
         self.problems = None
         # shape: (batch, node, node)
@@ -64,6 +66,18 @@ class TSPEnv:
         else:
             self.problems = get_random_problems(batch_size, self.problem_size)
         # problems.shape: (batch, problem, 2)
+        if self.NORM_MODE:
+            self.norm = [0] * batch_size
+            #print(self.problems[0,0])
+            for i in range(batch_size):
+                x = self.problems[i].T[0] - torch.min(self.problems[i].T[0])
+                y = self.problems[i].T[1] - torch.min(self.problems[i].T[1])
+                self.problems[i] = torch.stack((x.T,y.T), 1)
+                #print(self.problems[0,0])
+                self.norm[i] = max(torch.max(self.problems[i].T[0]),torch.max(self.problems[i].T[1]))
+                self.problems[i] = self.problems[i] / self.norm[i]
+                #print(self.norm[i])
+            #print(self.problems[0,0])
         if aug_factor > 1:
             if aug_factor == 8:
                 self.batch_size = self.batch_size * 8
@@ -147,8 +161,14 @@ class TSPEnv:
         gathering_index = self.selected_node_list.unsqueeze(
             3).expand(self.batch_size, -1, self.problem_size, 2)
         # shape: (batch, pomo, problem, 2)
+
+        if self.NORM_MODE:
+            for i in range(self.batch_size):
+                self.problems[i] = self.problems[i] * self.norm[i]
+            #print(self.problems[0,0])
         seq_expanded = self.problems[:, None, :, :].expand(
             self.batch_size, self.pomo_size, self.problem_size, 2)
+
 
         ordered_seq = seq_expanded.gather(dim=2, index=gathering_index)
         # shape: (batch, pomo, problem, 2)

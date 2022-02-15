@@ -75,14 +75,14 @@ def augment_xy_data_by_8_fold(problems):
 #     y = problems[:, :, [1]]
 #     # x,y shape: (batch, problem, 1)
 
-#     dat1 = problems
-#     dat2 = torch.cat((x-0.1, y-0.1), dim=2)
-#     dat3 = torch.cat((x+0.1, y-0.1), dim=2)
-#     dat4 = torch.cat((x-0.1, y+0.1), dim=2)
-#     dat5 = torch.cat((x+0.2, y+0.2), dim=2)
-#     dat6 = torch.cat((x-0.2, y-0.2), dim=2)
-#     dat7 = torch.cat((x+0.2, y-0.2), dim=2)
-#     dat8 = torch.cat((x-0.2, y+0.2), dim=2)
+    # dat1 = problems
+    # dat2 = torch.cat((x-0.1, y-0.1), dim=2)
+    # dat3 = torch.cat((x+0.1, y-0.1), dim=2)
+    # dat4 = torch.cat((x-0.1, y+0.1), dim=2)
+    # dat5 = torch.cat((x+0.2, y+0.2), dim=2)
+    # dat6 = torch.cat((x-0.2, y-0.2), dim=2)
+    # dat7 = torch.cat((x+0.2, y-0.2), dim=2)
+    # dat8 = torch.cat((x-0.2, y+0.2), dim=2)
 
 #     aug_problems = torch.cat((dat1, dat2, dat3, dat4, dat5, dat6, dat7, dat8), dim=0)
 #     # shape: (8*batch, problem, 2)
