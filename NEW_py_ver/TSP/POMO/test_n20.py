@@ -20,13 +20,15 @@ from TSPTester import TSPTester as Tester
 import numpy as np
 import torch
 import argparse
+
 parser = argparse.ArgumentParser(description='Description of the argument')
 
 parser.add_argument('--DEBUG_MODE', action='store_true')
 parser.add_argument('--problem_size', type=int, default= 20)
 parser.add_argument('--pomo_size', type=int, default= 1)
 parser.add_argument('--path', type=str, default='./result/saved_tsp20_model')
-parser.add_argument('--epoch', type=int, default= 510)
+parser.add_argument('--epoch', type=int, default=510)
+parser.add_argument('--NORM_MODE', action='store_true')
 parser.add_argument('--TEST_MODE', action='store_true')
 parser.add_argument('--test_set', type=str, default='../TSProblem/testset_n20.npy')
 parser.add_argument('--test_episodes', type=int, default= 1000)
@@ -54,6 +56,7 @@ env_params = {
     'cuda_device_num': CUDA_DEVICE_NUM,
     'problem_size': args.problem_size,
     'pomo_size': args.pomo_size,
+    'NORM_MODE': args.NORM_MODE,
     'TEST_MODE': args.TEST_MODE,
     'test_set': args.test_set,
 }
