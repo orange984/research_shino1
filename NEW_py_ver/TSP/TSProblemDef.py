@@ -28,17 +28,43 @@ def rotate(xy, rad):
     return torch.reshape(xy, (batch, problem, 2))
 
 
+# def augment_xy_data_by_4_fold(problems):
+#     # problems.shape: (batch, problem, 2)
+
+#     x = problems[:, :, [0]]
+#     y = problems[:, :, [1]]
+#     # x,y shape: (batch, problem, 1)
+
+#     dat1 = torch.cat((x, y), dim=2)
+#     dat2 = torch.cat(((1 - x), y), dim=2)
+#     dat3 = torch.cat((x, (1 - y)), dim=2)
+#     dat4 = torch.cat(((1 - x), (1 - y)), dim=2)
+
+#     aug_problems = torch.cat((dat1, dat2, dat3, dat4), dim=0)
+#     # shape: (8*batch, problem, 2)
+
+#     return aug_problems
+
+# def augment_xy_data_by_4_fold(problems):
+#     # problems.shape: (batch, problem, 2)
+
+#     dat1 = problems
+#     dat2 = rotate(problems, math.pi/2)
+#     dat3 = rotate(problems, -math.pi/2)
+#     dat4 = rotate(problems, math.pi)
+
+#     aug_problems = torch.cat((dat1, dat2, dat3, dat4), dim=0)
+#     # shape: (8*batch, problem, 2)
+
+#     return aug_problems
+
 def augment_xy_data_by_4_fold(problems):
     # problems.shape: (batch, problem, 2)
 
-    x = problems[:, :, [0]]
-    y = problems[:, :, [1]]
-    # x,y shape: (batch, problem, 1)
-
-    dat1 = torch.cat((x, y), dim=2)
-    dat2 = torch.cat(((1 - x), y), dim=2)
-    dat3 = torch.cat((x, (1 - y)), dim=2)
-    dat4 = torch.cat(((1 - x), (1 - y)), dim=2)
+    dat1 = rotate(problems, math.pi*4)
+    dat2 = rotate(problems, -math.pi/4)
+    dat3 = rotate(problems, math.pi*3/4)
+    dat4 = rotate(problems, -math.pi*3/4)
 
     aug_problems = torch.cat((dat1, dat2, dat3, dat4), dim=0)
     # shape: (8*batch, problem, 2)

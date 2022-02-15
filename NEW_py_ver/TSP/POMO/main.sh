@@ -1,14 +1,14 @@
 #!/bin/bash
-EPOCHS=(510 1000 2000)
-SIZES=(20 50 100)
-MODEL=(100)
-AUGS=(8)
+EPOCHS=(2000)
+SIZES=(100)
+MODEL=()
+AUGS=(4)
 
 
 for INDEX in 0; do
 for AUG in "${AUGS[@]}"; do
   python test_n20.py  --problem_size ${SIZES[$INDEX]}\
-                      --pomo_size ${SIZES[$INDEX]}\
+                      --pomo_size 1\
                       --path "./result/saved_tsp""${SIZES[$INDEX]}""_model"\
                       --epoch ${EPOCHS[$INDEX]}\
                       --test_episodes 10000\
