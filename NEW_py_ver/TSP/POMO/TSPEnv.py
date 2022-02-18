@@ -163,10 +163,12 @@ class TSPEnv:
         # shape: (batch, pomo, problem, 2)
 
         if self.NORM_MODE:
+            w = self.problems.clone()
             for i in range(self.batch_size):
-                self.problems[i] = self.problems[i] * self.norm[i]
+                w[i] = self.problems[i] * self.norm[i]
             #print(self.problems[0,0])
-        seq_expanded = self.problems[:, None, :, :].expand(
+        seq_expanded = w[:, None, :, :].expand(
+            self.batch_size, self.pomo_size, self.problem_size, 2) if self.NORM_MODE else self.problems[:, None, :, :].expand(
             self.batch_size, self.pomo_size, self.problem_size, 2)
 
 

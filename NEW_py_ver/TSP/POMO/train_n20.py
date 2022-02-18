@@ -17,10 +17,31 @@ from utils.utils import create_logger, copy_all_src
 
 from TSPTrainer import TSPTrainer as Trainer
 
+import argparse
+
+
+parser = argparse.ArgumentParser(description='Description of the argument')
+
+parser.add_argument('--DEBUG_MODE', action='store_true')
+parser.add_argument('--problem_size', type=int, default=20)
+parser.add_argument('--pomo_size', type=int, default=1)
+parser.add_argument('--path', type=str, default='./result/saved_tsp20_model')
+parser.add_argument('--epoch', type=int, default=510)
+parser.add_argument('--NORM_MODE', action='store_true')
+parser.add_argument('--TEST_MODE', action='store_true')
+parser.add_argument('--test_set', type=str,
+                    default='../TSProblem/testset_n20.npy')
+parser.add_argument('--train_episodes', type=int, default=100*1000)
+parser.add_argument('--train_batch_size', type=int, default=20)
+parser.add_argument('--desc', type=str, default='train__tsp_n20')
+
+
+args = parser.parse_args()
+
 ##########################################################################################
 # Machine Environment Config
 
-DEBUG_MODE = True
+DEBUG_MODE = args.DEBUG_MODE
 USE_CUDA = not DEBUG_MODE
 CUDA_DEVICE_NUM = 0
 
@@ -29,8 +50,13 @@ CUDA_DEVICE_NUM = 0
 # parameters
 
 env_params = {
-    'problem_size': 20,
-    'pomo_size': 20,
+    'use_cuda': USE_CUDA,
+    'cuda_device_num': CUDA_DEVICE_NUM,
+    'problem_size': args.problem_size,
+    'pomo_size': args.pomo_size,
+    'NORM_MODE': args.NORM_MODE,
+    'TEST_MODE': args.TEST_MODE,
+    'test_set': args.test_set,
 }
 
 model_params = {
@@ -58,15 +84,15 @@ optimizer_params = {
 trainer_params = {
     'use_cuda': USE_CUDA,
     'cuda_device_num': CUDA_DEVICE_NUM,
-    'epochs': 510,
-    'train_episodes': 100 * 1000,
-    'train_batch_size': 64,
+    'epochs': args.epoch,
+    'train_episodes': args.train_episodes,
+    'train_batch_size': 20,
     'logging': {
         'model_save_interval': 10,
         'img_save_interval': 10,
         'log_image_params_1': {
             'json_foldername': 'log_image_style',
-            'filename': 'style_tsp_20.json'
+            'filename': 'style_tsp_' + str(args.problem_size) + '.json'
         },
         'log_image_params_2': {
             'json_foldername': 'log_image_style',
@@ -83,7 +109,7 @@ trainer_params = {
 
 logger_params = {
     'log_file': {
-        'desc': 'train__tsp_n20',
+        'desc': args.desc,
         'filename': 'run_log'
     }
 }
