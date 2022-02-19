@@ -2,7 +2,7 @@
 EPOCHS=(2000)
 SIZES=(100)
 MODEL=()
-AUGS=(4)
+AUGS=(1)
 
 
 for INDEX in 0; do
@@ -12,6 +12,7 @@ for AUG in "${AUGS[@]}"; do
                       --path "./result/saved_tsp""${SIZES[$INDEX]}""_model"\
                       --epoch ${EPOCHS[$INDEX]}\
                       --test_episodes 10000\
+                      --NORM_MODE\
                       --TEST_MODE\
                       --test_set "../TSProblem/testset_n""${SIZES[$INDEX]}"".npy"\
                       --test_batch_size 20\

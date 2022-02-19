@@ -1,6 +1,6 @@
 #!/bin/bash
-EPOCHS=(510)
-SIZES=(20)
+EPOCHS=(2000)
+SIZES=(100)
 AUGS=(8)
 
 for INDEX in 0; do
@@ -10,7 +10,7 @@ for AUG in "${AUGS[@]}"; do
                       --pomo_size 1\
                       --path "./result/saved_tsp""${SIZES[$INDEX]}""_model"\
                       --epoch ${EPOCHS[$INDEX]}\
-                      --NORM_MODE\
+                      #--NORM_MODE\
                       --TEST_MODE\
                       --test_set "../TSProblem/testset_n""${SIZES[$INDEX]}"".npy"\
                       --test_episodes 10000\

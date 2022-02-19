@@ -5,6 +5,7 @@ Dockerfile
 !/NEW_py_ver/TSP/POMO/result/saved*
 /NEW_py_ver/CVRP/POMO/result
 !/NEW_py_ver/CVRP/POMO/result/saved*
+.devcontainer
 
 
 # Byte-compiled / optimized / DLL files
