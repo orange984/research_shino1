@@ -34,8 +34,8 @@ class TSPEnv:
         self.TEST_MODE = env_params['TEST_MODE']
         self.NORM_MODE = env_params['NORM_MODE']
         self.test_set = env_params['test_set']
-        self.probs = torch.from_numpy(
-            np.load(self.test_set).astype(np.float32)).clone().to(env_params['cuda_device_num'] if env_params['use_cuda'] else 'cpu')
+        problem = np.round(np.load(self.test_set).astype(np.float32), 3)
+        self.probs = torch.from_numpy(problem).clone().to(env_params['cuda_device_num'] if env_params['use_cuda'] else 'cpu')
 
         # Const @Load_Problem
         ####################################
