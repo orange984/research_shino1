@@ -162,14 +162,15 @@ class TSPEnv:
             3).expand(self.batch_size, -1, self.problem_size, 2)
         # shape: (batch, pomo, problem, 2)
 
-        if self.NORM_MODE:
-            w = self.problems.clone()
-            for i in range(self.batch_size):
-                w[i] = self.problems[i] * self.norm[i]
+        # if self.NORM_MODE:
+        #     w = self.problems.clone()
+        #     for i in range(self.batch_size):
+        #         w[i] = self.problems[i] * self.norm[i]
             #print(self.problems[0,0])
-        seq_expanded = w[:, None, :, :].expand(
-            self.batch_size, self.pomo_size, self.problem_size, 2) if self.NORM_MODE else self.problems[:, None, :, :].expand(
-            self.batch_size, self.pomo_size, self.problem_size, 2)
+        # seq_expanded = w[:, None, :, :].expand(
+        #     self.batch_size, self.pomo_size, self.problem_size, 2) if self.NORM_MODE else self.problems[:, None, :, :].expand(
+        #     self.batch_size, self.pomo_size, self.problem_size, 2)
+        seq_expanded =  self.problems[:, None, :, :].expand(self.batch_size, self.pomo_size, self.problem_size, 2)
 
 
         ordered_seq = seq_expanded.gather(dim=2, index=gathering_index)
