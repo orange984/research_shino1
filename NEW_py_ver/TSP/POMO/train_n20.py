@@ -12,6 +12,7 @@ sys.path.insert(0, "../..")  # for utils
 ##########################################################################################
 # import
 
+import torch
 import logging
 from utils.utils import create_logger, copy_all_src
 
@@ -118,6 +119,7 @@ logger_params = {
 # main
 
 def main():
+    torch.manual_seed(0) #問題セットを固定
     if DEBUG_MODE:
         _set_debug_mode()
 

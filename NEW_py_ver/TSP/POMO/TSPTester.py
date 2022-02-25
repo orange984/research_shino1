@@ -1,4 +1,5 @@
 
+import numpy
 import torch
 
 import os
@@ -55,6 +56,8 @@ class TSPTester:
 
         score_AM = AverageMeter()
         aug_score_AM = AverageMeter()
+        std_AM = AverageMeter()
+        mean_AM = AverageMeter()
 
         test_num_episode = self.tester_params['test_episodes']
         episode = 0
@@ -64,10 +67,12 @@ class TSPTester:
             remaining = test_num_episode - episode
             batch_size = min(self.tester_params['test_batch_size'], remaining)
 
-            score, aug_score = self._test_one_batch(batch_size, episode)
+            score, aug_score, mean, std = self._test_one_batch(batch_size, episode)
 
             score_AM.update(score, batch_size)
             aug_score_AM.update(aug_score, batch_size)
+            std_AM.update(std, batch_size)
+            mean_AM.update(mean, batch_size)
 
             episode += batch_size
 
@@ -75,8 +80,8 @@ class TSPTester:
             # Logs
             ############################
             elapsed_time_str, remain_time_str = self.time_estimator.get_est_string(episode, test_num_episode)
-            self.logger.info("episode {:3d}/{:3d}, Elapsed[{}], Remain[{}], score:{:.3f}, aug_score:{:.3f}".format(
-                episode, test_num_episode, elapsed_time_str, remain_time_str, score, aug_score))
+            self.logger.info("episode {:3d}/{:3d}, Elapsed[{}], Remain[{}], score:{:.3f}, aug_score:{:.3f}, aug_mean:{:.3f}, aug_std:{:.5f}".format(
+                episode, test_num_episode, elapsed_time_str, remain_time_str, score, aug_score, mean, std))
 
             all_done = (episode == test_num_episode)
 
@@ -84,6 +89,8 @@ class TSPTester:
                 self.logger.info(" *** Test Done *** ")
                 self.logger.info(" NO-AUG SCORE: {:.4f} ".format(score_AM.avg))
                 self.logger.info(" AUGMENTATION SCORE: {:.4f} ".format(aug_score_AM.avg))
+                self.logger.info(" AUGMENTATION MEAN SCORE: {:.4f} ".format(mean_AM.avg))
+                self.logger.info(" AUGMENTATION STD SCORE: {:.5f} ".format(std_AM.avg))
 
     def _test_one_batch(self, batch_size, episode):
 
@@ -115,6 +122,18 @@ class TSPTester:
         aug_reward = reward.reshape(aug_factor, batch_size, self.env.pomo_size)
         # shape: (augmentation, batch, pomo)
 
+        aug_means = []
+        aug_stds = []
+        for i in range(batch_size):
+            aug_mean = torch.mean(-1*aug_reward[:, i, :])
+            aug_means.append(aug_mean.item())
+            # print((-1*aug_reward[:, i, :] - aug_mean))
+            aug_std = torch.sqrt(torch.mean((-1*aug_reward[:, i, :] - aug_mean)**2))
+            aug_stds.append(aug_std.item())
+
+        mean = numpy.mean(aug_means)
+        std = numpy.mean(aug_stds)
+
         max_pomo_reward, _ = aug_reward.max(dim=2)  # get best results from pomo
         # shape: (augmentation, batch)
         no_aug_score = -max_pomo_reward[0, :].float().mean()  # negative sign to make positive value
@@ -123,4 +142,4 @@ class TSPTester:
         # shape: (batch,)
         aug_score = -max_aug_pomo_reward.float().mean()  # negative sign to make positive value
 
-        return no_aug_score.item(), aug_score.item()
+        return no_aug_score.item(), aug_score.item(), mean, std

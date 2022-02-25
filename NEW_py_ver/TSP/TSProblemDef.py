@@ -9,6 +9,24 @@ def get_random_problems(batch_size, problem_size):
     # problems.shape: (batch, problem, 2)
     return problems
 
+# def get_random_problems(batch_size, problem_size): #単位円から作問
+#     problems = torch.zeros(batch_size, problem_size, 2)
+#     i, j = 0, 0
+#     # for i in range(batch_size):
+#     #   for j in range(problem_size):
+#     while i < batch_size:
+#       point = torch.rand(2)
+#       # print(point)
+#       # print(torch.sqrt(torch.sum(((point - 0.5)**2))).item())
+#       if torch.sqrt(torch.sum(((point - 0.5)**2))).item() < 0.5:
+#         problems[i, j] = point
+#         j+=1
+#         if j == problem_size:
+#           i+=1
+#           j = 0
+#     # print(i, j)
+#     return problems
+
 
 def get_rotation_matrix(rad):
     rot = torch.tensor([[np.cos(rad), -np.sin(rad)],
