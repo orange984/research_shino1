@@ -1,6 +1,6 @@
 #!/bin/bash
-EPOCHS=(200)
-SIZES=(20)
+EPOCHS=(100)
+SIZES=(100)
 
 
 for INDEX in 0; do

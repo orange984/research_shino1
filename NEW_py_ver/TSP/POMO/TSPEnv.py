@@ -5,6 +5,7 @@ import numpy as np
 
 from TSProblemDef import get_random_problems, augment_xy_data_by_4_fold, augment_xy_data_by_8_fold, augment_xy_data_by_10_fold, augment_xy_data_by_12_fold, augment_xy_data_by_16_fold
 
+from utils.utils import *
 
 @dataclass
 class Reset_State:
@@ -36,6 +37,8 @@ class TSPEnv:
         self.test_set = env_params['test_set']
         problem = np.round(np.load(self.test_set).astype(np.float32), 3)
         self.probs = torch.from_numpy(problem).clone().to(env_params['cuda_device_num'] if env_params['use_cuda'] else 'cpu')
+
+        self.result_folder = get_result_folder()
 
         # Const @Load_Problem
         ####################################
@@ -162,14 +165,28 @@ class TSPEnv:
             3).expand(self.batch_size, -1, self.problem_size, 2)
         # shape: (batch, pomo, problem, 2)
 
-        # if self.NORM_MODE:
-        #     w = self.problems.clone()
-        #     for i in range(self.batch_size):
-        #         w[i] = self.problems[i] * self.norm[i]
-            #print(self.problems[0,0])
-        # seq_expanded = w[:, None, :, :].expand(
-        #     self.batch_size, self.pomo_size, self.problem_size, 2) if self.NORM_MODE else self.problems[:, None, :, :].expand(
-        #     self.batch_size, self.pomo_size, self.problem_size, 2)
+        if self.NORM_MODE:
+            w = self.problems.clone()
+            for i in range(self.batch_size):
+                w[i] = self.problems[i] * self.norm[i]
+            # print(self.problems[0,0])
+            _seq_expanded = w[:, None, :, :].expand(self.batch_size, self.pomo_size, self.problem_size, 2)
+            _ordered_seq = _seq_expanded.gather(dim=2, index=gathering_index)
+            # shape: (batch, pomo, problem, 2)
+
+            _rolled_seq = _ordered_seq.roll(dims=2, shifts=-1)
+            _segment_lengths = ((_ordered_seq-_rolled_seq)**2).sum(3).sqrt()
+            # shape: (batch, pomo, problem)
+
+            _travel_distances = _segment_lengths.sum(2)
+            # shape: (batch, pomo)
+
+            norm_dists = _travel_distances.to('cpu').detach().numpy().copy()
+
+            with open(self.result_folder + '/norm_dists', "ab") as f:
+                f.write(b"\n")
+                np.savetxt(f, norm_dists)
+
         seq_expanded =  self.problems[:, None, :, :].expand(self.batch_size, self.pomo_size, self.problem_size, 2)
 
 
@@ -182,4 +199,10 @@ class TSPEnv:
 
         travel_distances = segment_lengths.sum(2)
         # shape: (batch, pomo)
+
+        dists = travel_distances.to('cpu').detach().numpy().copy()
+        with open(self.result_folder + '/dists', "ab") as f:
+            f.write(b"\n")
+            np.savetxt(f, dists)
+
         return travel_distances

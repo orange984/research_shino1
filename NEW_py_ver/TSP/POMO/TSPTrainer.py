@@ -71,7 +71,8 @@ class TSPTrainer:
             self.scheduler.step()
 
             # Train
-            train_score, train_loss = self._train_one_epoch(epoch)
+            train_score, train_loss = self._train_one_epoch(epoch) #score_AM.avg, loss_AM.avg 
+
             self.result_log.append('train_score', epoch, train_score)
             self.result_log.append('train_loss', epoch, train_loss)
 
